@@ -67,6 +67,7 @@ export interface Transaction {
   amount: number
   description: string | null
   date: string
+  payment_date: string | null
   category_id: string | null
   account_id: string | null
   invoice_id: string | null

@@ -26,7 +26,10 @@ export function useTransactions({ month, year }: UseTransactionsOptions = {}) {
     if (month && year) {
       const from = `${year}-${String(month).padStart(2, '0')}-01`
       const to = new Date(year, month, 0).toISOString().split('T')[0]
-      query = query.gte('date', from).lte('date', to)
+      // Filter by payment_date when set, otherwise fall back to date
+      query = query
+        .or(`payment_date.gte.${from},and(payment_date.is.null,date.gte.${from})`)
+        .or(`payment_date.lte.${to},and(payment_date.is.null,date.lte.${to})`)
     }
 
     const { data } = await query

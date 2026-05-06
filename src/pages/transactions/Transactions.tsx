@@ -109,15 +109,15 @@ export function Transactions() {
         <>
           <div className="mb-4 grid grid-cols-3 gap-3">
             <div className="rounded-xl border border-green-100 bg-green-50 px-4 py-3">
-              <p className="text-xs text-green-600">Entradas</p>
+              <p className="text-xs text-green-600">Entradas previstas</p>
               <p className="font-bold text-green-700">{formatCurrency(totalIncome)}</p>
             </div>
             <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-              <p className="text-xs text-red-600">Saídas</p>
+              <p className="text-xs text-red-600">Saídas previstas</p>
               <p className="font-bold text-red-700">{formatCurrency(totalExpense)}</p>
             </div>
             <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3">
-              <p className="text-xs text-indigo-600">Saldo do período</p>
+              <p className="text-xs text-indigo-600">Saldo projetado</p>
               <p className={`font-bold ${balance >= 0 ? 'text-indigo-700' : 'text-red-700'}`}>{formatCurrency(balance)}</p>
             </div>
           </div>
@@ -142,7 +142,8 @@ export function Transactions() {
             <Table>
               <Table.Head>
                 <Table.Row>
-                  <Table.Th>Data</Table.Th>
+                  <Table.Th>Compra</Table.Th>
+                  <Table.Th>Pagamento</Table.Th>
                   <Table.Th>Descrição</Table.Th>
                   <Table.Th>Categoria</Table.Th>
                   <Table.Th>Conta / Cartão</Table.Th>
@@ -152,12 +153,23 @@ export function Transactions() {
               </Table.Head>
               <Table.Body>
                 {filtered.length === 0 ? (
-                  <Table.Empty colSpan={6} message="Nenhuma transação no período." />
+                  <Table.Empty colSpan={7} message="Nenhuma transação no período." />
                 ) : (
                   filtered.map((t) => (
                     <Table.Row key={t.id}>
                       <Table.Td className="whitespace-nowrap text-xs text-gray-500">
                         {new Date(t.date).toLocaleDateString('pt-BR')}
+                      </Table.Td>
+                      <Table.Td className="whitespace-nowrap text-xs">
+                        {t.payment_date && t.payment_date !== t.date ? (
+                          <span className="font-medium text-amber-600">
+                            {new Date(t.payment_date).toLocaleDateString('pt-BR')}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">
+                            {new Date(t.payment_date ?? t.date).toLocaleDateString('pt-BR')}
+                          </span>
+                        )}
                       </Table.Td>
                       <Table.Td>
                         <span className="font-medium text-gray-800">{t.description ?? '—'}</span>
